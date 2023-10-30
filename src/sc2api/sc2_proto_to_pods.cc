@@ -161,6 +161,7 @@ bool Convert(const SC2APIProtocol::CloakState &cloak_proto, Unit::CloakState &cl
     switch (cloak_proto) {
     case SC2APIProtocol::CloakState::CloakedUnknown:
         cloak = Unit::CloakedUnknown;
+        return true;
     case SC2APIProtocol::CloakState::Cloaked:
         cloak = Unit::Cloaked;
         return true;

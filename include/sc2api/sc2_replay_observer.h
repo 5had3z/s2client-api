@@ -17,29 +17,30 @@ class ControlInterface;
 struct ReplayInfo;
 
 //! A client for running a replay.
-class ReplayObserver : public Client {
-public:
+class ReplayObserver : public Client
+{
+  public:
     ReplayObserver();
     ~ReplayObserver() override;
 
     //! Obtains the replay control interface.
     //!< \return The replay control interface.
-    ReplayControlInterface* ReplayControl();
+    ReplayControlInterface *ReplayControl();
 
     //! Obtains the observer action interface.
     //!< \return The observer action interface.
-    ObserverActionInterface* ObserverAction();
+    ObserverActionInterface *ObserverAction();
 
     //! Determines if the replay should be filtered out.
     //! \param replay_info Replay information used to decide if the replay should be filtered.
     //!< \return If 'true', the replay will be rejected and not analyzed.
-    virtual bool IgnoreReplay(const ReplayInfo& replay_info, uint32_t& player_id);
+    virtual bool IgnoreReplay(const ReplayInfo &replay_info, uint32_t &player_id);
 
-    void SetControl(ControlInterface* control);
+    void SetControl(ControlInterface *control);
 
-private:
-    ReplayControlImp* replay_control_imp_;
-    ObserverActionImp* observer_action_imp_;
+  private:
+    ReplayControlImp *replay_control_imp_;
+    ObserverActionImp *observer_action_imp_;
 };
 
-}
+}// namespace sc2

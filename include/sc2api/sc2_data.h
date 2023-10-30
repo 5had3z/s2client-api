@@ -1,11 +1,11 @@
 #pragma once
 
-#include "sc2_proto_interface.h"
 #include "sc2_gametypes.h"
+#include "sc2_proto_interface.h"
 #include "sc2_typeenums.h"
-#include <vector>
-#include <string>
 #include <stdint.h>
+#include <string>
+#include <vector>
 
 namespace sc2 {
 
@@ -14,11 +14,11 @@ class ObservationInterface;
 typedef MessageResponsePtr<SC2APIProtocol::ResponseData> ResponseDataPtr;
 
 //! Indicates if an ability is available, and if that ability requires a point.
-struct AvailableAbility {
+struct AvailableAbility
+{
     AvailableAbility() = default;
-    AvailableAbility(AbilityID ability_id, bool requires_point) :
-        ability_id(ability_id),
-        requires_point(requires_point) {};
+    AvailableAbility(AbilityID ability_id, bool requires_point)
+      : ability_id(ability_id), requires_point(requires_point){};
 
     //! Ability that is available.
     AbilityID ability_id = 0;
@@ -27,7 +27,8 @@ struct AvailableAbility {
 };
 
 //! Data about an ability.
-struct AbilityData {
+struct AbilityData
+{
     //! Type of target this ability applies to.
     enum class Target {
         //! There is no target, applies to self.
@@ -80,7 +81,7 @@ struct AbilityData {
 
     //! Serialize this ability entry from the .proto file (used internally).
     //!< \param ability_data The proto entry for this ability.
-    void ReadFromProto(const SC2APIProtocol::AbilityData& ability_data);
+    void ReadFromProto(const SC2APIProtocol::AbilityData &ability_data);
     //! Serialize this ability to a string.
     std::string Log() const;
 };
@@ -88,7 +89,8 @@ struct AbilityData {
 typedef std::vector<AbilityData> Abilities;
 
 //! All available abilities for a unit.
-struct AvailableAbilities {
+struct AvailableAbilities
+{
     //! The available abilities.
     std::vector<AvailableAbility> abilities;
     //! The unit.
@@ -98,9 +100,7 @@ struct AvailableAbilities {
 
     //! Returns true if this object refers to a valid unit and unit type.
     //!< \return If this object is valid.
-    bool IsValid() const {
-        return unit_tag && unit_type_id;
-    }
+    bool IsValid() const { return unit_tag && unit_type_id; }
 };
 
 //! Category of unit.
@@ -120,37 +120,35 @@ enum class Attribute {
 };
 
 //! Damage bonus of unit.
-struct DamageBonus {
+struct DamageBonus
+{
     Attribute attribute;
     float bonus;
 
     DamageBonus();
 
-    void ReadFromProto(const SC2APIProtocol::DamageBonus& damage_bonus);
+    void ReadFromProto(const SC2APIProtocol::DamageBonus &damage_bonus);
 };
 
 //! Unit weapon.
-struct Weapon {
-    enum class TargetType {
-        Ground = 1,
-        Air = 2,
-        Any = 3,
-        Invalid = 4
-    };
+struct Weapon
+{
+    enum class TargetType { Ground = 1, Air = 2, Any = 3, Invalid = 4 };
     TargetType type;
     float damage_;
-    std::vector<DamageBonus> damage_bonus;              // Extra damage when attacking a unit of a certain attribute
-    uint32_t attacks;                                   // Number of hits per attack. (eg. Colossus has 2 beams)
+    std::vector<DamageBonus> damage_bonus;// Extra damage when attacking a unit of a certain attribute
+    uint32_t attacks;// Number of hits per attack. (eg. Colossus has 2 beams)
     float range;
-    float speed;                                        // Time between attacks
+    float speed;// Time between attacks
 
     Weapon();
 
-    void ReadFromProto(const SC2APIProtocol::Weapon& weapon);
+    void ReadFromProto(const SC2APIProtocol::Weapon &weapon);
 };
 
 //! Data about a unit type. This data is derived from the catalog (xml) data of the game and upgrades.
-struct UnitTypeData {
+struct UnitTypeData
+{
     //! Stable ID. This ID will not change between patches.
     UnitTypeID unit_type_id;
     //! Unit type name, corresponds to the game's catalog.
@@ -203,7 +201,7 @@ struct UnitTypeData {
 
     //! Serialize this ability entry from the .proto file (used internally).
     //!< \param unit_data The proto entry for this ability.
-    void ReadFromProto(const SC2APIProtocol::UnitTypeData& unit_data);
+    void ReadFromProto(const SC2APIProtocol::UnitTypeData &unit_data);
     //! Serialize this unit type to a string.
     std::string Log() const;
 };
@@ -211,7 +209,8 @@ struct UnitTypeData {
 typedef std::vector<UnitTypeData> UnitTypes;
 
 //! Upgrade data.
-struct UpgradeData {
+struct UpgradeData
+{
     //! Stable ID. This ID will not change between patches.
     uint32_t upgrade_id;
     //! Upgrade name, corresponds to the game's catalog.
@@ -227,14 +226,15 @@ struct UpgradeData {
 
     UpgradeData();
 
-    void ReadFromProto(const SC2APIProtocol::UpgradeData& upgrade_data);
+    void ReadFromProto(const SC2APIProtocol::UpgradeData &upgrade_data);
     std::string Log() const;
 };
 
 typedef std::vector<UpgradeData> Upgrades;
 
 //! Buff data.
-struct BuffData {
+struct BuffData
+{
     //! Stable ID. This ID will not change between patches.
     uint32_t buff_id;
     //! Buff name, corresponds to the game's catalog.
@@ -242,14 +242,15 @@ struct BuffData {
 
     BuffData();
 
-    void ReadFromProto(const SC2APIProtocol::BuffData& buff_data);
+    void ReadFromProto(const SC2APIProtocol::BuffData &buff_data);
     std::string Log() const;
 };
 
 typedef std::vector<BuffData> Buffs;
 
 //! Effect data.
-struct EffectData {
+struct EffectData
+{
     //! Stable ID. This ID will not change between patches.
     uint32_t effect_id;
     //! Effect name, corresponds to the game's catalog.
@@ -259,18 +260,17 @@ struct EffectData {
     //! Size of the circle the effect impacts.
     float radius;
 
-    void ReadFromProto(const SC2APIProtocol::EffectData& effect_data);
+    void ReadFromProto(const SC2APIProtocol::EffectData &effect_data);
     std::string Log() const;
 };
 
 typedef std::vector<EffectData> Effects;
 
 //! Power source information for Protoss.
-struct PowerSource {
-    PowerSource(const Point2D in_position, float in_radius, Tag in_tag) :
-        position(in_position),
-        radius(in_radius),
-        tag(in_tag) {};
+struct PowerSource
+{
+    PowerSource(const Point2D in_position, float in_radius, Tag in_tag)
+      : position(in_position), radius(in_radius), tag(in_tag){};
 
     //! Power source position.
     Point2D position;
@@ -281,16 +281,17 @@ struct PowerSource {
 };
 
 //! The visuals of a persistent ability on the map. (eg. Psistorm)
-struct Effect {
+struct Effect
+{
     //! Type of the effect
     uint32_t effect_id;
     //! All the positions that this effect is impacting on the map.
     //! eg. The Lurker's attack impacts multiple positions in a line.
     std::vector<Point2D> positions;
 
-    void ReadFromProto(const SC2APIProtocol::Effect& effect);
+    void ReadFromProto(const SC2APIProtocol::Effect &effect);
 };
 
-AbilityID GetGeneralizedAbilityID(uint32_t ability_id, const ObservationInterface& observation);
+AbilityID GetGeneralizedAbilityID(uint32_t ability_id, const ObservationInterface &observation);
 
-}
+}// namespace sc2

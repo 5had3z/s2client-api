@@ -3,21 +3,22 @@
 */
 #pragma once
 
-#include "sc2_proto_interface.h"
-#include "sc2_gametypes.h"
 #include "sc2_common.h"
+#include "sc2_gametypes.h"
+#include "sc2_proto_interface.h"
 #include "sc2_typeenums.h"
-#include <vector>
-#include <unordered_map>
-#include <string>
 #include <stdint.h>
+#include <string>
+#include <unordered_map>
+#include <vector>
 
 namespace sc2 {
 
 class ObservationInterface;
 
 //! An order that is active on a unit.
-struct UnitOrder {
+struct UnitOrder
+{
     //! Ability ID that triggered the order.
     AbilityID ability_id;
     //! Target unit of the order, if there is one.
@@ -27,15 +28,12 @@ struct UnitOrder {
     //! Progress of the order.
     float progress;
 
-    UnitOrder() :
-        ability_id(0),
-        target_unit_tag(NullTag),
-        progress(0.0f) {
-    }
+    UnitOrder() : ability_id(0), target_unit_tag(NullTag), progress(0.0f) {}
 };
 
 //! A passenger on a transport.
-struct PassengerUnit {
+struct PassengerUnit
+{
     //! The tag of the unit in the transport.
     Tag tag;
     //! The health of the unit in the transport.
@@ -53,21 +51,16 @@ struct PassengerUnit {
     //! The type of unit in the transport.
     UnitTypeID unit_type;
 
-    PassengerUnit() :
-        tag(NullTag),
-        health(0.0f),
-        health_max(0.0f),
-        shield(0.0f),
-        shield_max(0.0f),
-        energy(0.0f),
-        energy_max(0.0f),
-        unit_type(0) {
-    }
+    PassengerUnit()
+      : tag(NullTag), health(0.0f), health_max(0.0f), shield(0.0f), shield_max(0.0f), energy(0.0f), energy_max(0.0f),
+        unit_type(0)
+    {}
 };
 
 //! A unit. Could be a structure, a worker or a military unit.
-class Unit {
-public:
+class Unit
+{
+  public:
     //! If the unit is shown on screen or not.
     enum DisplayType {
         //! Unit will be visible.
@@ -93,14 +86,16 @@ public:
 
     //! Unit cloak state.
     enum CloakState {
+        //! Under the fog, so unknown weather it's cloaked or not.
+        CloakedUnknown = 0,
         //! Cloaked, invisible to enemies until detected.
         Cloaked = 1,
         //! Cloaked enemy, but detected.
         CloakedDetected = 2,
         //! No cloaking.
         NotCloaked = 3,
-        //! Could not determine cloaking state.
-        Unknown = 4
+        //! Cloaked ally unit.
+        CloakedAllied = 4
     };
 
     //! If the unit is shown on screen or not.
@@ -178,7 +173,8 @@ public:
     int cargo_space_max;
     //! Number of harvesters associated with a town hall (e.g., Command Center). Only valid for this player's units.
     int assigned_harvesters;
-    //! Number of harvesters that can be assigned to a town hall (e.g., Command Center). Only valid for this player's units.
+    //! Number of harvesters that can be assigned to a town hall (e.g., Command Center). Only valid for this player's
+    //! units.
     int ideal_harvesters;
     //! Target unit of a unit. Only valid for this player's units.
     Tag engaged_target_tag;
@@ -195,51 +191,53 @@ public:
     Unit();
 };
 
-typedef std::vector<const Unit*> Units;
+typedef std::vector<const Unit *> Units;
 typedef std::unordered_map<Tag, size_t> UnitIdxMap;
 
-class UnitPool {
-public:
-    Unit* CreateUnit(Tag tag);
-    Unit* GetUnit(Tag tag) const;
-    Unit* GetExistingUnit(Tag tag) const;
+class UnitPool
+{
+  public:
+    Unit *CreateUnit(Tag tag);
+    Unit *GetUnit(Tag tag) const;
+    Unit *GetExistingUnit(Tag tag) const;
     void MarkDead(Tag tag);
 
-    //TODO: Change alive -> Exist
-    void ForEachExistingUnit(const std::function<void(Unit& unit)>& functor) const;
+    // TODO: Change alive -> Exist
+    void ForEachExistingUnit(const std::function<void(Unit &unit)> &functor) const;
     void ClearExisting();
     bool UnitExists(Tag tag);
 
-private:
+  private:
     void IncrementIndex();
 
     static const size_t ENTRY_SIZE = 1000;
     typedef std::pair<size_t, size_t> PoolIndex;
     // std::array<Unit, ENTRY_SIZE>
-    std::vector<std::vector<Unit> > unit_pool_;
+    std::vector<std::vector<Unit>> unit_pool_;
     PoolIndex available_index_;
-    std::unordered_map<Tag, Unit*> tag_to_unit_;
-    std::unordered_map<Tag, Unit*> tag_to_existing_unit_;
+    std::unordered_map<Tag, Unit *> tag_to_unit_;
+    std::unordered_map<Tag, Unit *> tag_to_existing_unit_;
 };
 
 //! Determines if the unit matches the unit type.
-struct IsUnit {
-    IsUnit(UNIT_TYPEID type) : type_(type) {};
+struct IsUnit
+{
+    IsUnit(UNIT_TYPEID type) : type_(type){};
     UNIT_TYPEID type_;
-    bool operator()(const Unit& unit) { return unit.unit_type == type_; };
+    bool operator()(const Unit &unit) { return unit.unit_type == type_; };
 };
 
 //! Determines if units matches the unit type.
-struct IsUnits {
-    IsUnits(std::vector<UNIT_TYPEID> types) : types_(types) {};
+struct IsUnits
+{
+    IsUnits(std::vector<UNIT_TYPEID> types) : types_(types){};
     std::vector<UNIT_TYPEID> types_;
-    bool operator()(const Unit& unit) {
+    bool operator()(const Unit &unit)
+    {
         bool included = false;
-        for (const auto& type : types_) {
-            included = included || (unit.unit_type == type);
-        }
+        for (const auto &type : types_) { included = included || (unit.unit_type == type); }
         return included;
     };
 };
 
-}
+}// namespace sc2

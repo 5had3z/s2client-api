@@ -11,7 +11,8 @@
 namespace sc2 {
 
 //! Data for a feature layer or rendered image.
-struct ImageData {
+struct ImageData
+{
     int width;
     int height;
     int bits_per_pixel;
@@ -21,13 +22,15 @@ struct ImageData {
 };
 
 //! Rendered data for a game frame.
-struct RenderedFrame {
+struct RenderedFrame
+{
     ImageData map;
     ImageData minimap;
 };
 
 //! Setup structure for feature layers or rendered images.
-struct SpatialSetup {
+struct SpatialSetup
+{
     //! For feature layers only, determines the world space size of the camera.
     float camera_width;
     //! Number of pixels in X of the main game view.
@@ -41,7 +44,8 @@ struct SpatialSetup {
 };
 
 //! Determines what type of data will be returned in observations.
-struct InterfaceOptions {
+struct InterfaceOptions
+{
     //! Raw data; essentially a list of units.
     bool raw;
     //! Feature layer data.
@@ -50,23 +54,22 @@ struct InterfaceOptions {
     SpatialSetup render;
 };
 
-struct PlayerInfo {
+struct PlayerInfo
+{
     uint32_t player_id;
     PlayerType player_type;
     Race race_requested;
     Race race_actual;
     Difficulty difficulty;
 
-    PlayerInfo(uint32_t player_id, PlayerType player_type, Race race_requested, Race race_actual, Difficulty difficulty) :
-        player_id(player_id),
-        player_type(player_type),
-        race_requested(race_requested),
-        race_actual(race_actual),
-        difficulty(difficulty) {};
+    PlayerInfo(uint32_t player_id, PlayerType player_type, Race race_requested, Race race_actual, Difficulty difficulty)
+      : player_id(player_id), player_type(player_type), race_requested(race_requested), race_actual(race_actual),
+        difficulty(difficulty){};
 };
 
 //! Initial data for a game and map.
-struct GameInfo {
+struct GameInfo
+{
     //! Plain text name of a map. Note that this may be different from the filename of the map.
     std::string map_name;
     //! Filename of map. Includes the ".SC2Map" file extension.
@@ -98,4 +101,4 @@ struct GameInfo {
     GameInfo();
 };
 
-}
+}// namespace sc2

@@ -1,15 +1,16 @@
 #pragma once
 
 #include "sc2_common.h"
-#include "sc2_typeenums.h"
 #include "sc2_gametypes.h"
-#include <vector>
+#include "sc2_typeenums.h"
 #include <stdint.h>
+#include <vector>
 
 namespace sc2 {
 
 //! An action (command or ability) applied to a unit or set of units.
-struct ActionRaw {
+struct ActionRaw
+{
     //! Type of target. Target types are mutually exclusive.
     enum TargetType {
         //! No target generally means 'self', e.g., a order to make a unit.
@@ -36,22 +37,13 @@ struct ActionRaw {
 
     //! Comparison overload.
 
-    bool operator==(const ActionRaw& a) const {
-        if (ability_id != a.ability_id) {
-            return false;
-        }
-        if (target_type != a.target_type) {
-            return false;
-        }
-        if (target_tag != a.target_tag) {
-            return false;
-        }
-        if (target_point.x != a.target_point.x) {
-            return false;
-        }
-        if (target_point.y != a.target_point.y) {
-            return false;
-        }
+    bool operator==(const ActionRaw &a) const
+    {
+        if (ability_id != a.ability_id) { return false; }
+        if (target_type != a.target_type) { return false; }
+        if (target_tag != a.target_tag) { return false; }
+        if (target_point.x != a.target_point.x) { return false; }
+        if (target_point.y != a.target_point.y) { return false; }
         return true;
     }
 };
@@ -59,7 +51,8 @@ struct ActionRaw {
 typedef std::vector<ActionRaw> RawActions;
 
 //! An action (command or ability) applied to selected units when using feature layers or the rendered interface.
-struct SpatialUnitCommand {
+struct SpatialUnitCommand
+{
     //! If this action should apply to the screen or minimap.
     enum TargetType {
         //! Apply this action to the main game screen.
@@ -79,7 +72,8 @@ struct SpatialUnitCommand {
 };
 
 //! Where to move the camera to on the minimap.
-struct SpatialCameraMove {
+struct SpatialCameraMove
+{
     Point2DI center_minimap;
 };
 
@@ -96,7 +90,8 @@ enum class PointSelectionType {
 };
 
 //! Point selection.
-struct SpatialSelectPoint {
+struct SpatialSelectPoint
+{
     Point2DI select_screen;
     PointSelectionType type;
 };
@@ -104,13 +99,15 @@ struct SpatialSelectPoint {
 //! Rectangle selection. Equivalent to click-drag with the mouse. Multiple rectangles
 //! are allowed as the feature layer projection is orthogonal, and may not exactly work
 //! for the regular in-game perspective view.
-struct SpatialSelectRect {
+struct SpatialSelectRect
+{
     std::vector<Rect2DI> select_screen;
     bool select_add;
 };
 
 //! Possible actions for feature layers.
-struct SpatialActions {
+struct SpatialActions
+{
     //! Commands to selected units.
     std::vector<SpatialUnitCommand> unit_commands;
     //! Camera movement.
@@ -121,4 +118,4 @@ struct SpatialActions {
     std::vector<SpatialSelectRect> select_rects;
 };
 
-}
+}// namespace sc2

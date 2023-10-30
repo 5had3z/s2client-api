@@ -8,16 +8,16 @@ be of little concern to the consumer.
 
 #pragma once
 
-#include "sc2api/sc2_common.h"
 #include "sc2api/sc2_action.h"
-#include "sc2api/sc2_unit.h"
+#include "sc2api/sc2_common.h"
 #include "sc2api/sc2_data.h"
+#include "sc2api/sc2_unit.h"
 
 #include <vector>
 
 // Forward declarations to avoid including proto headers everywhere.
 namespace SC2APIProtocol {
-    class Observation;
+class Observation;
 }
 
 namespace sc2 {
@@ -29,23 +29,20 @@ class ObservationInterface;
 struct Score;
 struct GameInfo;
 
-enum class Visibility {
-    Hidden = 0,
-    Fogged = 1,
-    Visible = 2,
-    FullHidden = 3
-};
+enum class Visibility { Hidden = 0, Fogged = 1, Visible = 2, FullHidden = 3 };
 
 //! Used to filter out units when querying. You can use this filter to get all full health units, for example.
 //!< \param unit The unit in question to filter.
 //!< \param observation The interface for querying game state to determine whether the unit should be filtered or not.
-//!< \return Whether or not to filter the unit in or out of the list. true will add the unit, false will leave it out of the list.
-//!< \sa GetUnits()
-typedef std::function<bool(const Unit& unit)> Filter;
+//!< \return Whether or not to filter the unit in or out of the list. true will add the unit, false will leave it out of
+//!< the list. \sa GetUnits()
+typedef std::function<bool(const Unit &unit)> Filter;
 
-//! The ObservationInterface reflects the current state of the game. Guaranteed to be valid when OnGameStart or OnStep is called.
-class ObservationInterface {
-public:
+//! The ObservationInterface reflects the current state of the game. Guaranteed to be valid when OnGameStart or OnStep
+//! is called.
+class ObservationInterface
+{
+  public:
     virtual ~ObservationInterface() = default;
 
     //! Gets a unique ID that represents the player.
@@ -60,15 +57,17 @@ public:
     //!< \return List of all ally and visible enemy and neutral units.
     virtual Units GetUnits() const = 0;
 
-    //! Get all units belonging to a certain alliance and meet the conditions provided by the filter. The unit structure is const data only.
-    //! Therefore editing that data will not change any in game state. See the ActionInterface for changing Unit state.
+    //! Get all units belonging to a certain alliance and meet the conditions provided by the filter. The unit structure
+    //! is const data only. Therefore editing that data will not change any in game state. See the ActionInterface for
+    //! changing Unit state.
     //!< \param alliance The faction the units belong to.
     //!< \param filter A functor or lambda used to filter out any unneeded units in the list.
     //!< \return A list of units that meet the conditions provided by alliance and filter.
     virtual Units GetUnits(Unit::Alliance alliance, Filter filter = {}) const = 0;
 
-    //! Get all units belonging to self that meet the conditions provided by the filter. The unit structure is const data only.
-    //! Therefore editing that data will not change any in game state. See the ActionInterface for changing Unit state.
+    //! Get all units belonging to self that meet the conditions provided by the filter. The unit structure is const
+    //! data only. Therefore editing that data will not change any in game state. See the ActionInterface for changing
+    //! Unit state.
     //!< \param filter A functor or lambda used to filter out any unneeded units in the list.
     //!< \return A list of units that meet the conditions provided by the filter.
     virtual Units GetUnits(Filter filter) const = 0;
@@ -76,68 +75,68 @@ public:
     //! Get the unit state as represented by the last call to GetObservation.
     //!< \param tag Unique tag of the unit.
     //!< \return Pointer to the Unit object.
-    virtual const Unit* GetUnit(Tag tag) const = 0;
+    virtual const Unit *GetUnit(Tag tag) const = 0;
 
     //! Gets a list of actions performed as abilities applied to units. For use with the raw option.
     //!< \return List of raw actions.
-    virtual const RawActions& GetRawActions() const = 0;
+    virtual const RawActions &GetRawActions() const = 0;
 
     //! Gets a list of actions performed. For use with the feature layer options.
     //!< \return List of actions.
-    virtual const SpatialActions& GetFeatureLayerActions() const = 0;
+    virtual const SpatialActions &GetFeatureLayerActions() const = 0;
 
     //! Gets a list of actions performed. For use with the rendered options.
     //!< \return List of actions.
-    virtual const SpatialActions& GetRenderedActions() const = 0;
+    virtual const SpatialActions &GetRenderedActions() const = 0;
 
     //! Gets new chat messages.
     //!< \return List of chat messages.
-    virtual const std::vector<ChatMessage>& GetChatMessages() const = 0;
+    virtual const std::vector<ChatMessage> &GetChatMessages() const = 0;
 
     //! Gets all power sources associated with the current player.
     //!< \return List of power sources.
-    virtual const std::vector<PowerSource>& GetPowerSources() const = 0;
+    virtual const std::vector<PowerSource> &GetPowerSources() const = 0;
 
     //! Gets all active effects in vision of the current player.
     //!< \return List of effects.
-    virtual const std::vector<Effect>& GetEffects() const = 0;
+    virtual const std::vector<Effect> &GetEffects() const = 0;
 
     //! Gets all upgrades.
     //!< \return List of upgrades.
-    virtual const std::vector<UpgradeID>& GetUpgrades() const = 0;
+    virtual const std::vector<UpgradeID> &GetUpgrades() const = 0;
 
     //! Gets the detailed current set of scores.
     //!< \return The current score structure.
-    virtual const Score& GetScore() const = 0;
+    virtual const Score &GetScore() const = 0;
 
     //! Gets metadata of abilities. Array can be indexed directly by AbilityID.
     //!< \param force_refresh forces a full query from the game, may otherwise cache data from a previous call.
     //!< \return Data about all abilities possible for the current game session.
-    virtual const Abilities& GetAbilityData(bool force_refresh = false) const = 0;
+    virtual const Abilities &GetAbilityData(bool force_refresh = false) const = 0;
 
     //! Gets metadata of units. Array can be indexed directly by UnitID.
     //!< \param force_refresh forces a full query from the game, may otherwise cache data from a previous call.
     //!< \return Data about all units possible for the current game session.
-    virtual const UnitTypes& GetUnitTypeData(bool force_refresh = false) const = 0;
+    virtual const UnitTypes &GetUnitTypeData(bool force_refresh = false) const = 0;
 
     //! Gets metadata of upgrades. Array can be indexed directly by UpgradeID.
     //!< \param force_refresh forces a full query from the game, may otherwise cache data from a previous call.
     //!< \return Data about all upgrades possible for the current game session.
-    virtual const Upgrades& GetUpgradeData(bool force_refresh = false) const = 0;
+    virtual const Upgrades &GetUpgradeData(bool force_refresh = false) const = 0;
 
     //! Gets metadata of buffs. Array can be indexed directly by BuffID.
     //!< \param force_refresh forces a full query from the game, may otherwise cache data from a previous call.
     //!< \return Data about all buffs possible for the current game session.
-    virtual const Buffs& GetBuffData(bool force_refresh = false) const = 0;
+    virtual const Buffs &GetBuffData(bool force_refresh = false) const = 0;
 
     //! Gets metadata of effects. Array can be indexed directly by EffectID.
     //!< \param force_refresh forces a full query from the game, may otherwise cache data from a previous call.
     //!< \return Data about all effects possible for the current game session.
-    virtual const Effects& GetEffectData(bool force_refresh = false) const = 0;
+    virtual const Effects &GetEffectData(bool force_refresh = false) const = 0;
 
     //! Gets the GameInfo struct for the current map.
     //!< \return The current GameInfo struct.
-    virtual const GameInfo& GetGameInfo() const = 0;
+    virtual const GameInfo &GetGameInfo() const = 0;
 
     //! The mineral count of the player.
     //!< \return The mineral count.
@@ -189,43 +188,44 @@ public:
 
     //! Gets the results of the game.
     //!< \return Player results if the game ended, an empty vector otherwise.
-    virtual const std::vector<PlayerResult>& GetResults() const = 0;
+    virtual const std::vector<PlayerResult> &GetResults() const = 0;
 
     //! Returns 'true' if the given point has creep.
     //!< \param point Position to sample.
     //!< \return Creep.
-    virtual bool HasCreep(const Point2D& point) const = 0;
+    virtual bool HasCreep(const Point2D &point) const = 0;
 
     //! Returns visibility value of the given point for the current player.
     //!< \param point Position to sample.
     //!< \return Visibility.
-    virtual Visibility GetVisibility(const Point2D& point) const = 0;
+    virtual Visibility GetVisibility(const Point2D &point) const = 0;
 
     //! Returns 'true' if the given point on the terrain is pathable. This does not
     // include pathing blockers like structures. For more accurate pathing results
     // use QueryInterface::PathingDistance.
     //!< \param point Position to sample.
     //!< \return Pathable.
-    virtual bool IsPathable(const Point2D& point) const = 0;
+    virtual bool IsPathable(const Point2D &point) const = 0;
 
     //! Returns 'true' if the given point on the terrain is buildable. This does not
     // include blockers like other structures. For more accurate building placement
     // results use QueryInterface::Placement.
     //!< \param point Position to sample.
     //!< \return Placable.
-    virtual bool IsPlacable(const Point2D& point) const = 0;
+    virtual bool IsPlacable(const Point2D &point) const = 0;
 
     //! Returns terrain height of the given point.
     //!< \param point Position to sample.
     //!< \return Height.
-    virtual float TerrainHeight(const Point2D& point) const = 0;
+    virtual float TerrainHeight(const Point2D &point) const = 0;
 
-    //! A pointer to the low-level protocol data for the current observation. While it's possible to extract most in-game data from this pointer
-    // it is highly discouraged. It should only be used for extracting feature layers because it would be inefficient to copy these each frame.
+    //! A pointer to the low-level protocol data for the current observation. While it's possible to extract most
+    //! in-game data from this pointer
+    // it is highly discouraged. It should only be used for extracting feature layers because it would be inefficient to
+    // copy these each frame.
     //!< \return A const pointer to the Observation.
     //!< \sa Observation GetObservation()
-    virtual const SC2APIProtocol::Observation* GetRawObservation() const = 0;
-
+    virtual const SC2APIProtocol::Observation *GetRawObservation() const = 0;
 };
 
 
@@ -233,41 +233,45 @@ public:
 //!
 //! Performance note:
 //!  - Always try and batch things up. These queries are effectively synchronous and will block until returned.
-class QueryInterface {
-public:
+class QueryInterface
+{
+  public:
     virtual ~QueryInterface() = default;
 
-    //! Returns a list of abilities represented as a uint32_t see the ABILITY_ID enum for their corresponding, named, representations.
+    //! Returns a list of abilities represented as a uint32_t see the ABILITY_ID enum for their corresponding, named,
+    //! representations.
     //!< \param tag Tag of unit.
     //!< \param ignore_resource_requirements Ignores food, mineral and gas costs, as well as cooldowns.
     //!< \return Abilities for the unit.
-    virtual AvailableAbilities GetAbilitiesForUnit(const Unit* unit, bool ignore_resource_requirements = false) = 0;
+    virtual AvailableAbilities GetAbilitiesForUnit(const Unit *unit, bool ignore_resource_requirements = false) = 0;
     //! Issues multiple available abilities queries.
     //! Batch version.
     //!< \param tag Tags of units.
     //!< \param ignore_resource_requirements Ignores food, mineral and gas costs, as well as cooldowns.
     //!< \return Abilities for the units.
-    virtual std::vector<AvailableAbilities> GetAbilitiesForUnits(const Units& units, bool ignore_resource_requirements = false) = 0;
+    virtual std::vector<AvailableAbilities> GetAbilitiesForUnits(const Units &units,
+      bool ignore_resource_requirements = false) = 0;
 
     //! Returns pathing distance between two locations. Takes into account unit movement properties (e.g. Flying).
     //!< \param start Starting point.
     //!< \param end End point.
     //!< \return Distance between the two points.
-    virtual float PathingDistance(const Point2D& start, const Point2D& end) = 0;
-    //! Returns pathing distance between a unit and a target location. Takes into account unit movement properties (e.g. Flying).
-    //! Batch version.
+    virtual float PathingDistance(const Point2D &start, const Point2D &end) = 0;
+    //! Returns pathing distance between a unit and a target location. Takes into account unit movement properties (e.g.
+    //! Flying). Batch version.
     //!< \param start Starting points.
     //!< \param end End points.
     //!< \return Distances between the two points.
-    virtual float PathingDistance(const Unit* start, const Point2D& end) = 0;
+    virtual float PathingDistance(const Unit *start, const Point2D &end) = 0;
 
-    struct PathingQuery {
+    struct PathingQuery
+    {
         Tag start_unit_tag_ = NullTag;
         Point2D start_;
         Point2D end_;
     };
     //! Issues multiple pathing queries.
-    virtual std::vector<float> PathingDistance(const std::vector<PathingQuery>& queries) = 0;
+    virtual std::vector<float> PathingDistance(const std::vector<PathingQuery> &queries) = 0;
 
     //! Returns whether a building can be placed at a location.
     //! The placing unit field is optional. This is only used for cases where the placing unit plays a role in the
@@ -276,70 +280,73 @@ public:
     //!< \param end target_pos Position to attempt placement on.
     //!< \param placing_unit_tag_ (Optional) The unit that is moving, if moving a structure.
     //!< \return If placement is possible.
-    virtual bool Placement(const AbilityID& ability, const Point2D& target_pos, const Unit* unit = nullptr) = 0;
+    virtual bool Placement(const AbilityID &ability, const Point2D &target_pos, const Unit *unit = nullptr) = 0;
 
-    struct PlacementQuery {
+    struct PlacementQuery
+    {
         PlacementQuery() = default;
-        PlacementQuery(AbilityID ability_id, Point2D target) :
-            ability(ability_id),
-            target_pos(target) {};
+        PlacementQuery(AbilityID ability_id, Point2D target) : ability(ability_id), target_pos(target){};
 
         AbilityID ability;
         Point2D target_pos;
-        Tag placing_unit_tag = 0LL;     // Optional. Used for testing placement with add-ons.
+        Tag placing_unit_tag = 0LL;// Optional. Used for testing placement with add-ons.
     };
     //! A batch version of the above Placement query. Takes an array of abilities, positions and
     //! optional unit tags and returns a matching array of bools indicating if placement is possible.
     //!< \param queries Placement queries.
     //!< \return Array of bools indicating if placement is possible.
-    virtual std::vector<bool> Placement(const std::vector<PlacementQuery>& queries) = 0;
+    virtual std::vector<bool> Placement(const std::vector<PlacementQuery> &queries) = 0;
 };
 
 
 //! The ActionInterface issues actions to units in a game. Not available in replays.
 //! Guaranteed to be valid when the OnStep event is called.
-class ActionInterface {
-public:
+class ActionInterface
+{
+  public:
     virtual ~ActionInterface() = default;
 
     /*!\fn virtual void UnitCommand(Tag unit_tag, uint32_t ability)
-     * Batches a UnitCommand that will be dispatched when SendActions() is called. UnitCommand has many overloaded functions, you can call it with
-     * most combinations of Unit types (the Unit object or tag), ability types (the enum or uint32_t) and targets (a 2D position or tag).
-     * \param unit_tag The unique id that represents the unit.
-     * \param ability The unique id that represents the ability, see ABILITY_ID for ids.
-     * \sa ABILITY_ID Unit Point2D SendActions()
+     * Batches a UnitCommand that will be dispatched when SendActions() is called. UnitCommand has many overloaded
+     * functions, you can call it with most combinations of Unit types (the Unit object or tag), ability types (the enum
+     * or uint32_t) and targets (a 2D position or tag). \param unit_tag The unique id that represents the unit. \param
+     * ability The unique id that represents the ability, see ABILITY_ID for ids. \sa ABILITY_ID Unit Point2D
+     * SendActions()
      */
 
     //! Issues a command to a unit. Self targeting.
     //!< \param unit The unit to send the command to.
     //!< \param ability The ability id of the command.
-    virtual void UnitCommand(const Unit* unit, AbilityID ability, bool queued_command = false) = 0;
+    virtual void UnitCommand(const Unit *unit, AbilityID ability, bool queued_command = false) = 0;
 
     //! Issues a command to a unit. Targets a point.
     //!< \param unit The unit to send the command to.
     //!< \param ability The ability id of the command.
     //!< \param point The 2D world position to target.
-    virtual void UnitCommand(const Unit* unit, AbilityID ability, const Point2D& point, bool queued_command = false) = 0;
+    virtual void
+      UnitCommand(const Unit *unit, AbilityID ability, const Point2D &point, bool queued_command = false) = 0;
 
     //! Issues a command to a unit. Targets another unit.
     //!< \param unit The unit to send the command to.
     //!< \param ability The ability id of the command.
     //!< \param target The unit that is a target of the unit getting the command.
-    virtual void UnitCommand(const Unit* unit, AbilityID ability, const Unit* target, bool queued_command = false) = 0;
+    virtual void UnitCommand(const Unit *unit, AbilityID ability, const Unit *target, bool queued_command = false) = 0;
 
     //! Issues a command to multiple units (prefer this where possible). Same as UnitCommand(Unit, AbilityID).
-    virtual void UnitCommand(const Units& units, AbilityID ability, bool queued_move = false) = 0;
+    virtual void UnitCommand(const Units &units, AbilityID ability, bool queued_move = false) = 0;
 
     //! Issues a command to multiple units (prefer this where possible). Same as UnitCommand(Unit, AbilityID, Point2D).
-    virtual void UnitCommand(const Units& units, AbilityID ability, const Point2D& point, bool queued_command = false) = 0;
+    virtual void
+      UnitCommand(const Units &units, AbilityID ability, const Point2D &point, bool queued_command = false) = 0;
 
     //! Issues a command to multiple units (prefer this where possible). Same as UnitCommand(Unit, AbilityID, Unit).
-    virtual void UnitCommand(const Units& units, AbilityID ability, const Unit* target, bool queued_command = false) = 0;
+    virtual void
+      UnitCommand(const Units &units, AbilityID ability, const Unit *target, bool queued_command = false) = 0;
 
-    //! Returns a list of unit tags that have sent commands out in the last call to SendActions. This will be used to determine
-    //! if a unit actually has a command when the observation is received.
+    //! Returns a list of unit tags that have sent commands out in the last call to SendActions. This will be used to
+    //! determine if a unit actually has a command when the observation is received.
     //!< \return Array of units that have sent commands.
-    virtual const std::vector<Tag>& Commands() const = 0;
+    virtual const std::vector<Tag> &Commands() const = 0;
 
     //! Enables or disables autocast of an ability on a unit.
     //!< \param unit_tag The unit to toggle the ability on.
@@ -348,24 +355,25 @@ public:
     //! Enables or disables autocast of an ability on a list of units.
     //!< \param unit_tags The units to toggle the ability on.
     //!< \param ability The ability to be toggled.
-    virtual void ToggleAutocast(const std::vector<Tag>& unit_tags, AbilityID ability) = 0;
+    virtual void ToggleAutocast(const std::vector<Tag> &unit_tags, AbilityID ability) = 0;
 
     //! Sends a message to the game chat.
     //!< \param message Text of message to send.
     //!< \param channel Which players will see the message.
-    virtual void SendChat(const std::string& message, ChatChannel channel = ChatChannel::All) = 0;
+    virtual void SendChat(const std::string &message, ChatChannel channel = ChatChannel::All) = 0;
 
-    //! This function sends out all batched unit commands. You DO NOT need to call this function in non real time simulations since
-    //! it is automatically called when stepping the simulation forward. You only need to call this function in a real time simulation.
-    //! For example, if you wanted to move 20 marines to some position on the map you'd want to batch all of those unit commands and
-    //! send them at once.
+    //! This function sends out all batched unit commands. You DO NOT need to call this function in non real time
+    //! simulations since it is automatically called when stepping the simulation forward. You only need to call this
+    //! function in a real time simulation. For example, if you wanted to move 20 marines to some position on the map
+    //! you'd want to batch all of those unit commands and send them at once.
     virtual void SendActions() = 0;
 };
 
 //! The ActionFeatureLayerInterface emulates UI actions in feature layer. Not available in replays.
 //! Guaranteed to be valid when the OnStep event is called.
-class ActionFeatureLayerInterface {
-public:
+class ActionFeatureLayerInterface
+{
+  public:
     virtual ~ActionFeatureLayerInterface() = default;
 
     //! Issues a command to whatever is selected. Self targeting.
@@ -376,37 +384,40 @@ public:
     //!< \param ability The ability id of the command.
     //!< \param point The 2D world position to target.
     //!< \param minimap Target in the minimap instead of the map.
-    virtual void UnitCommand(AbilityID ability, const Point2DI& point, bool minimap = false) = 0;
+    virtual void UnitCommand(AbilityID ability, const Point2DI &point, bool minimap = false) = 0;
 
     //! Moves the camera to be centered around a position. Coordinate is position on minimap feature layer.
-    virtual void CameraMove(const Point2DI& center) = 0;
+    virtual void CameraMove(const Point2DI &center) = 0;
 
     //! Selection of a point, equivalent to clicking the mouse on a unit.
     //!< \param center The feature layer 'pixel' being clicked on.
     //!< \param selection_type Any modifier keys, for example if 'shift-click' is desired.
-    virtual void Select(const Point2DI& center, PointSelectionType selection_type) = 0;
+    virtual void Select(const Point2DI &center, PointSelectionType selection_type) = 0;
 
     //! Selection of an area, equivalent to click-dragging the mouse over an area of the screen.
     //!< \param p0 The feature layer pixel where the first click occurs (mouse button down).
     //!< \param p1 The feature layer pixel where the drag release occurs (mouse button up).
     //!< \param add_to_selection Will add newly selected units to an existing selection.
-    virtual void Select(const Point2DI& p0, const Point2DI& p1, bool add_to_selection = false) = 0;
+    virtual void Select(const Point2DI &p0, const Point2DI &p1, bool add_to_selection = false) = 0;
 
-    //! This function sends out all batched selection and unit commands. You DO NOT need to call this function in non real time simulations since
-    //! it is automatically called when stepping the simulation forward. You only need to call this function in a real time simulation.
+    //! This function sends out all batched selection and unit commands. You DO NOT need to call this function in non
+    //! real time simulations since it is automatically called when stepping the simulation forward. You only need to
+    //! call this function in a real time simulation.
     virtual void SendActions() = 0;
 };
 
 //! The ObserverActionInterface corresponds to the actions available in the observer UI.
-class ObserverActionInterface {
-public:
-    virtual ~ObserverActionInterface () = default;
+class ObserverActionInterface
+{
+  public:
+    virtual ~ObserverActionInterface() = default;
 
     //! Moves the observer camera to a target location. Will cause the camera to stop following
     //! the observed player's perspective.
     //!< \param point The 2D world position to target.
-    //!< \param distance Distance between camera and terrain. Larger value zooms out camera. Defaults to standard camera distance if set to 0.
-    virtual void CameraMove(const Point2D& point, float distance = 0.0f) = 0;
+    //!< \param distance Distance between camera and terrain. Larger value zooms out camera. Defaults to standard camera
+    //!< distance if set to 0.
+    virtual void CameraMove(const Point2D &point, float distance = 0.0f) = 0;
 
     //! Makes the observer camera follow the observed player's perspective.
     virtual void CameraFollowPlayer() = 0;
@@ -420,8 +431,9 @@ public:
 //! Guaranteed to be valid when the OnStep event is called.
 //! All debug actions are queued and dispatched when SendDebug is called. All drawn primitives
 //! continue to draw without resending until another SendDebug is called.
-class DebugInterface {
-public:
+class DebugInterface
+{
+  public:
     virtual ~DebugInterface() = default;
 
     // Debug drawing primitives.
@@ -429,34 +441,38 @@ public:
     //! Outputs text at the top, left of the screen.
     //!< \param out The string of text to display.
     //!< \param color (Optional) Color of the text.
-    virtual void DebugTextOut(const std::string& out, Color color = Colors::White) = 0;
+    virtual void DebugTextOut(const std::string &out, Color color = Colors::White) = 0;
     //! Outputs text at any 2D point on the screen. Coordinate ranges are 0..1 in X and Y.
     //!< \param out The string of text to display.
     //!< \param pt_virtual_2D The screen position to draw text at.
     //!< \param color (Optional) Color of the text.
     //!< \param size (Optional) Pixel height of the text.
-    virtual void DebugTextOut(const std::string& out, const Point2D& pt_virtual_2D, Color color = Colors::White, uint32_t size = 8) = 0;
+    virtual void DebugTextOut(const std::string &out,
+      const Point2D &pt_virtual_2D,
+      Color color = Colors::White,
+      uint32_t size = 8) = 0;
     //! Outputs text at any 3D point in the game world. Map coordinates are used.
     //!< \param out The string of text to display.
     //!< \param pt3D The world position to draw text at.
     //!< \param color (Optional) Color of the text.
     //!< \param size (Optional) Pixel height of the text.
-    virtual void DebugTextOut(const std::string& out, const Point3D& pt3D, Color color = Colors::White, uint32_t size = 8) = 0;
+    virtual void
+      DebugTextOut(const std::string &out, const Point3D &pt3D, Color color = Colors::White, uint32_t size = 8) = 0;
     //! Outputs a line between two 3D points in the game world. Map coordinates are used.
     //!< \param p0 The starting position of the line.
     //!< \param p1 The ending position of the line.
     //!< \param color (Optional) Color of the line.
-    virtual void DebugLineOut(const Point3D& p0, const Point3D& p1, Color color = Colors::White) = 0;
+    virtual void DebugLineOut(const Point3D &p0, const Point3D &p1, Color color = Colors::White) = 0;
     //! Outputs a box specified as two 3D points in the game world. Map coordinates are used.
     //!< \param p0 One corner of the box.
     //!< \param p1 The far corner of the box.
     //!< \param color (Optional) Color of the lines.
-    virtual void DebugBoxOut(const Point3D& p_min, const Point3D& p_max, Color color = Colors::White) = 0;
+    virtual void DebugBoxOut(const Point3D &p_min, const Point3D &p_max, Color color = Colors::White) = 0;
     //! Outputs a sphere specified as a 3D point in the game world and a radius. Map coordinates are used.
     //!< \param p Center of the sphere.
     //!< \param r Radius of the sphere.
     //!< \param color (Optional) Color of the lines.
-    virtual void DebugSphereOut(const Point3D& p, float r, Color color = Colors::White) = 0;
+    virtual void DebugSphereOut(const Point3D &p, float r, Color color = Colors::White) = 0;
 
     // Cheats.
 
@@ -465,11 +481,12 @@ public:
     //!< \param p Position to create the unit at.
     //!< \param player_id Player the unit should belong to.
     //!< \param count Number of units to create.
-    virtual void DebugCreateUnit(UnitTypeID unit_type, const Point2D& p, uint32_t player_id = 1, uint32_t count = 1) = 0;
+    virtual void
+      DebugCreateUnit(UnitTypeID unit_type, const Point2D &p, uint32_t player_id = 1, uint32_t count = 1) = 0;
 
     //! Destroy a unit.
     //!< \param tag Unit to destroy.
-    virtual void DebugKillUnit(const Unit* unit) = 0;
+    virtual void DebugKillUnit(const Unit *unit) = 0;
 
     //! Makes the entire map visible, i.e., removes the fog-of-war.
     virtual void DebugShowMap() = 0;
@@ -501,33 +518,29 @@ public:
     //! Sets the energy level on a unit.
     //!< \param value The new energy level.
     //!< \param tag The unit.
-    virtual void DebugSetEnergy(float value, const Unit* unit) = 0;
+    virtual void DebugSetEnergy(float value, const Unit *unit) = 0;
     //! Sets the life on a unit.
     //!< \param value The new life.
     //!< \param tag The unit.
-    virtual void DebugSetLife(float value, const Unit* unit) = 0;
+    virtual void DebugSetLife(float value, const Unit *unit) = 0;
     //! Sets shields on a unit.
     //!< \param value The new shields.
     //!< \param tag The unit.
-    virtual void DebugSetShields(float value, const Unit* unit) = 0;
+    virtual void DebugSetShields(float value, const Unit *unit) = 0;
 
     //! Sets the position of the camera.
     //!< \param pos The camera position in world space.
-    virtual void DebugMoveCamera(const Point2D& pos) = 0;
+    virtual void DebugMoveCamera(const Point2D &pos) = 0;
 
-      enum AppTest {
-        hang = 1,
-        crash = 2,
-        exit = 3
-      };
+    enum AppTest { hang = 1, crash = 2, exit = 3 };
     //! Cause the game to fail; useful to test library behavior.
     //!< \param app_test State to put the game into.
     //!< \param delay_ms Time to elapse before invoking the game state.
-      virtual void DebugTestApp(AppTest app_test, int delay_ms = 0) = 0;
+    virtual void DebugTestApp(AppTest app_test, int delay_ms = 0) = 0;
 
     //! Dispatch all queued debug commands. No debug commands will be sent until this is called.
     //! This will also clear or set new debug primitives like text and lines.
     virtual void SendDebug() = 0;
 };
 
-}
+}// namespace sc2

@@ -19,8 +19,9 @@ class ActionFeatureLayerInterface;
 class AgentControlInterface;
 
 //! The base class for user defined bots.
-class Agent : public Client {
-public:
+class Agent : public Client
+{
+  public:
     Agent();
     ~Agent() override;
 
@@ -28,19 +29,19 @@ public:
     //! then eventually dispatched with SendActions. If you are stepping the simulation yourself the Step
     //! will automatically call SendActions. If your bot is running in real time you must call SendActions yourself.
     //!< \return The raw (basic) action interface.
-    ActionInterface* Actions();
+    ActionInterface *Actions();
 
     //! Interface for issuing actions in feature layers.
     //!< \return The feature layer action interface.
-    ActionFeatureLayerInterface* ActionsFeatureLayer();
+    ActionFeatureLayerInterface *ActionsFeatureLayer();
 
     //! The AgentControlInterface is only currently used for restarting a game.
     //! For internal use.
     //!< \return The agent control interface.
-    AgentControlInterface* AgentControl();
+    AgentControlInterface *AgentControl();
 
-private:
-    AgentControlImp* agent_control_imp_;
+  private:
+    AgentControlImp *agent_control_imp_;
 };
 
-}
+}// namespace sc2

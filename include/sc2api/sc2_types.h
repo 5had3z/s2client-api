@@ -15,38 +15,32 @@ namespace sc2 {
 //! The template parameter is the enum. This class allows for seamless conversion between enum types and integers,
 //! while maintaining strong typing. This means, for example, that a unit type ID can be converted back and forth
 //! from an integer, but can't be used when another type ID, e.g., an ability ID, is required as a parameter.
-template<class T>
-class SC2Type {
-public:
+template<class T> class SC2Type
+{
+  public:
     //! Default constructor.
-    SC2Type() :
-        type_id_(0) {
-    }
+    SC2Type() : type_id_(0) {}
     //! Construct from an integer, corresponds to the enum value.
-    SC2Type(uint32_t type_id) :
-        type_id_(type_id) {
-    }
+    SC2Type(uint32_t type_id) : type_id_(type_id) {}
     //! Construct from the enum.
-    SC2Type(T type_id) :
-        type_id_(static_cast<uint32_t>(type_id)) {
-    }
+    SC2Type(T type_id) : type_id_(static_cast<uint32_t>(type_id)) {}
 
     //! Test equivalence.
     //!< \return 'true' if the values are equal.
-    bool operator ==(SC2Type<T> type_id) const { return type_id_ == type_id.type_id_; }
-    bool operator ==(T type_id) const { return type_id_ == static_cast<uint32_t>(type_id); }
-    bool operator ==(uint32_t type_id) const { return type_id_ == type_id; }
-    bool operator ==(int type_id) const { return static_cast<uint32_t>(type_id_) == type_id; }
+    bool operator==(SC2Type<T> type_id) const { return type_id_ == type_id.type_id_; }
+    bool operator==(T type_id) const { return type_id_ == static_cast<uint32_t>(type_id); }
+    bool operator==(uint32_t type_id) const { return type_id_ == type_id; }
+    bool operator==(int type_id) const { return static_cast<uint32_t>(type_id_) == type_id; }
 
     //! Test non-equivalence.
     //!< \return 'true' if the values are not equal.
-    bool operator !=(SC2Type<T> type_id) const { return type_id_ != type_id.type_id_; }
-    bool operator !=(T type_id) const { return type_id_ != static_cast<uint32_t>(type_id); }
-    bool operator !=(uint32_t type_id) const { return type_id_ != type_id; }
-    bool operator !=(int type_id) const { return static_cast<uint32_t>(type_id_) != type_id; }
+    bool operator!=(SC2Type<T> type_id) const { return type_id_ != type_id.type_id_; }
+    bool operator!=(T type_id) const { return type_id_ != static_cast<uint32_t>(type_id); }
+    bool operator!=(uint32_t type_id) const { return type_id_ != type_id; }
+    bool operator!=(int type_id) const { return static_cast<uint32_t>(type_id_) != type_id; }
 
-	//! Test comparison.
-	bool operator<(const SC2Type<T>& other) const { return type_id_ < other.type_id_; }
+    //! Test comparison.
+    bool operator<(const SC2Type<T> &other) const { return type_id_ < other.type_id_; }
 
     //! Cast to integer.
     operator uint32_t() const { return type_id_; }
@@ -65,8 +59,8 @@ public:
     //!< \return The enum.
     T ToType() const { return static_cast<T>(type_id_); }
 
-private:
+  private:
     uint32_t type_id_;
 };
 
-}
+}// namespace sc2

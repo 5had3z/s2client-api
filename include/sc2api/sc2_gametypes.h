@@ -3,8 +3,8 @@
 */
 #pragma once
 
-#include <vector>
 #include <string>
+#include <vector>
 
 #include "sc2_common.h"
 
@@ -13,19 +13,9 @@ namespace sc2 {
 typedef uint64_t Tag;
 static const Tag NullTag = 0LL;
 
-enum Race {
-    Terran,
-    Zerg,
-    Protoss,
-    Random
-};
+enum Race { Terran, Zerg, Protoss, Random };
 
-enum GameResult {
-    Win,
-    Loss,
-    Tie,
-    Undecided
-};
+enum GameResult { Win, Loss, Tie, Undecided };
 
 enum Difficulty {
     VeryEasy = 1,
@@ -40,25 +30,19 @@ enum Difficulty {
     CheatInsane = 10
 };
 
-enum PlayerType {
-    Participant = 1,
-    Computer = 2,
-    Observer = 3
-};
+enum PlayerType { Participant = 1, Computer = 2, Observer = 3 };
 
-enum class ChatChannel {
-    All = 0,
-    Team = 1
-};
+enum class ChatChannel { All = 0, Team = 1 };
 
 class Agent;
 
 //! Setup for a player in a game.
-struct PlayerSetup {
+struct PlayerSetup
+{
     //! Player can be a Participant (usually an agent), Computer (in-built AI) or Observer.
     PlayerType type;
     //! Agent, if one is available.
-    Agent* agent;
+    Agent *agent;
 
     // Only used for Computer
 
@@ -67,65 +51,50 @@ struct PlayerSetup {
     //! Difficulty: Only for playing against the built-in AI.
     Difficulty difficulty;
 
-    PlayerSetup() :
-        type(Participant),
-        agent(nullptr),
-        race(Terran),
-        difficulty(Easy) {
-    };
+    PlayerSetup() : type(Participant), agent(nullptr), race(Terran), difficulty(Easy){};
 
-    PlayerSetup(PlayerType in_type, Race in_race, Agent* in_agent = nullptr, Difficulty in_difficulty = Easy) :
-        type(in_type),
-        agent(in_agent),
-        race(in_race),
-        difficulty(in_difficulty) {
-
-    }
+    PlayerSetup(PlayerType in_type, Race in_race, Agent *in_agent = nullptr, Difficulty in_difficulty = Easy)
+      : type(in_type), agent(in_agent), race(in_race), difficulty(in_difficulty)
+    {}
 };
 
-static inline PlayerSetup CreateParticipant(Race race, Agent* agent) {
+static inline PlayerSetup CreateParticipant(Race race, Agent *agent)
+{
     return PlayerSetup(PlayerType::Participant, race, agent);
 }
 
-static inline PlayerSetup CreateComputer(Race race, Difficulty difficulty = Easy) {
+static inline PlayerSetup CreateComputer(Race race, Difficulty difficulty = Easy)
+{
     return PlayerSetup(PlayerType::Computer, race, nullptr, difficulty);
 }
 
 //! Port setup for a client.
-struct PortSet {
+struct PortSet
+{
     int game_port;
     int base_port;
 
-    PortSet() :
-        game_port(-1),
-        base_port(-1) {
-    }
+    PortSet() : game_port(-1), base_port(-1) {}
 
-    bool IsValid() const {
-        return game_port > 0 && base_port > 0;
-    }
+    bool IsValid() const { return game_port > 0 && base_port > 0; }
 };
 
 //! Port setup for one or more clients in a game.
-struct Ports {
+struct Ports
+{
     PortSet server_ports;
     std::vector<PortSet> client_ports;
     int shared_port;
 
-    Ports() :
-        shared_port(-1) {
-    }
+    Ports() : shared_port(-1) {}
 
-    bool IsValid() const {
-        if (shared_port < 1)
-            return false;
-        if (!server_ports.IsValid())
-            return false;
-        if (client_ports.size() < 1)
-            return false;
+    bool IsValid() const
+    {
+        if (shared_port < 1) return false;
+        if (!server_ports.IsValid()) return false;
+        if (client_ports.size() < 1) return false;
         for (std::size_t i = 0; i < client_ports.size(); ++i)
-            if (!client_ports[i].IsValid())
-                return false;
+            if (!client_ports[i].IsValid()) return false;
 
         return true;
     }
@@ -136,7 +105,8 @@ static const int max_version_size = 32;
 static const int max_num_players = 16;
 
 //! Information about a player in a replay.
-struct ReplayPlayerInfo {
+struct ReplayPlayerInfo
+{
     //! Player ID.
     int player_id;
     //! Player ranking.
@@ -150,17 +120,12 @@ struct ReplayPlayerInfo {
     //! If the player won or lost.
     GameResult game_result;
 
-    ReplayPlayerInfo() :
-        player_id(0),
-        mmr(-10000),
-        apm(0),
-        race(Random),
-        race_selected(Random) {
-    }
+    ReplayPlayerInfo() : player_id(0), mmr(-10000), apm(0), race(Random), race_selected(Random) {}
 };
 
 //! Information about a replay file.
-struct ReplayInfo {
+struct ReplayInfo
+{
     float duration;
     unsigned int duration_gameloops;
     int32_t num_players;
@@ -173,15 +138,10 @@ struct ReplayInfo {
     std::string data_version;
     ReplayPlayerInfo players[max_num_players];
 
-    ReplayInfo() :
-        duration(0.0f),
-        duration_gameloops(0),
-        num_players(0),
-        data_build(0),
-        base_build(0) {
-    }
+    ReplayInfo() : duration(0.0f), duration_gameloops(0), num_players(0), data_build(0), base_build(0) {}
 
-    bool GetPlayerInfo(ReplayPlayerInfo& replay_player_info, int playerID) const {
+    bool GetPlayerInfo(ReplayPlayerInfo &replay_player_info, int playerID) const
+    {
         for (int i = 0; i < num_players; ++i) {
             if (playerID == players[i].player_id) {
                 replay_player_info = players[i];
@@ -192,21 +152,21 @@ struct ReplayInfo {
         return false;
     }
 
-    float GetGameloopsPerSecond() const {
-        return float(duration_gameloops) / duration;
-    }
+    float GetGameloopsPerSecond() const { return float(duration_gameloops) / duration; }
 };
 
-struct PlayerResult {
-    PlayerResult(uint32_t player_id, GameResult result) : player_id(player_id), result(result) {};
+struct PlayerResult
+{
+    PlayerResult(uint32_t player_id, GameResult result) : player_id(player_id), result(result){};
 
     uint32_t player_id;
     GameResult result;
 };
 
-struct ChatMessage {
+struct ChatMessage
+{
     uint32_t player_id;
     std::string message;
 };
 
-}
+}// namespace sc2

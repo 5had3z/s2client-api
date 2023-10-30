@@ -3,11 +3,11 @@
 */
 #pragma once
 
-#include "sc2_proto_interface.h"
 #include "sc2_gametypes.h"
-#include <vector>
-#include <string>
+#include "sc2_proto_interface.h"
 #include <stdint.h>
+#include <string>
+#include <vector>
 
 namespace sc2 {
 
@@ -19,53 +19,51 @@ enum class ScoreType {
     Melee = 2
 };
 
-struct ScoreEntry {
+struct ScoreEntry
+{
     std::string name;
     int offset;
     bool use;
     bool nonzero;
 
-    ScoreEntry() :
-        offset(0),
-        use(true),
-        nonzero(false) {
-    }
+    ScoreEntry() : offset(0), use(true), nonzero(false) {}
 };
 
-#define SET_ENTRY_BASE(STRUCTNAME, ENTRYNAME)                                       \
-    {                                                                               \
-        ScoreEntry new_entry;                                                       \
-        new_entry.offset += (int)int64_t(&(((STRUCTNAME*)0)->ENTRYNAME));           \
-        new_entry.name += #STRUCTNAME"."#ENTRYNAME;                                 \
-        entries.push_back(new_entry);                                               \
+#define SET_ENTRY_BASE(STRUCTNAME, ENTRYNAME)                              \
+    {                                                                      \
+        ScoreEntry new_entry;                                              \
+        new_entry.offset += (int)int64_t(&(((STRUCTNAME *)0)->ENTRYNAME)); \
+        new_entry.name += #STRUCTNAME "." #ENTRYNAME;                      \
+        entries.push_back(new_entry);                                      \
     }
 
-#define SET_ENTRY_BASE_STRUCT(STRUCTNAME, ENTRYNAME)                                \
-    {                                                                               \
-        ScoreEntry base_entry;                                                      \
-        base_entry.offset += (int)int64_t(&(((STRUCTNAME*)0)->ENTRYNAME));          \
-        base_entry.name += #STRUCTNAME"."#ENTRYNAME;                                \
-        ((STRUCTNAME*)0)->ENTRYNAME.AddEntries(base_entry, entries);                \
+#define SET_ENTRY_BASE_STRUCT(STRUCTNAME, ENTRYNAME)                        \
+    {                                                                       \
+        ScoreEntry base_entry;                                              \
+        base_entry.offset += (int)int64_t(&(((STRUCTNAME *)0)->ENTRYNAME)); \
+        base_entry.name += #STRUCTNAME "." #ENTRYNAME;                      \
+        ((STRUCTNAME *)0)->ENTRYNAME.AddEntries(base_entry, entries);       \
     }
 
-#define SET_ENTRY(STRUCTNAME, ENTRYNAME)                                            \
-    {                                                                               \
-        ScoreEntry new_entry = base;                                                \
-        new_entry.offset += (int)int64_t(&(((STRUCTNAME*)0)->ENTRYNAME));           \
-        new_entry.name += "."#ENTRYNAME;                                            \
-        entries.push_back(new_entry);                                               \
+#define SET_ENTRY(STRUCTNAME, ENTRYNAME)                                   \
+    {                                                                      \
+        ScoreEntry new_entry = base;                                       \
+        new_entry.offset += (int)int64_t(&(((STRUCTNAME *)0)->ENTRYNAME)); \
+        new_entry.name += "." #ENTRYNAME;                                  \
+        entries.push_back(new_entry);                                      \
     }
 
-#define SET_ENTRY_STRUCT(STRUCTNAME, ENTRYNAME)                                     \
-    {                                                                               \
-        ScoreEntry new_entry = base;                                                \
-        new_entry.offset += (int)int64_t(&(((STRUCTNAME*)0)->ENTRYNAME));           \
-        new_entry.name += "."#ENTRYNAME;                                            \
-        ((STRUCTNAME*)0)->ENTRYNAME.AddEntries(new_entry, entries);                 \
+#define SET_ENTRY_STRUCT(STRUCTNAME, ENTRYNAME)                            \
+    {                                                                      \
+        ScoreEntry new_entry = base;                                       \
+        new_entry.offset += (int)int64_t(&(((STRUCTNAME *)0)->ENTRYNAME)); \
+        new_entry.name += "." #ENTRYNAME;                                  \
+        ((STRUCTNAME *)0)->ENTRYNAME.AddEntries(new_entry, entries);       \
     }
 
 //! Score by category.
-struct CategoryScoreDetails {
+struct CategoryScoreDetails
+{
     float none;
     float army;
     float economy;
@@ -74,7 +72,8 @@ struct CategoryScoreDetails {
 
     CategoryScoreDetails();
 
-    static void AddEntries(ScoreEntry base, std::vector<ScoreEntry>& entries) {
+    static void AddEntries(ScoreEntry base, std::vector<ScoreEntry> &entries)
+    {
         SET_ENTRY(CategoryScoreDetails, none)
         SET_ENTRY(CategoryScoreDetails, army)
         SET_ENTRY(CategoryScoreDetails, economy)
@@ -84,14 +83,16 @@ struct CategoryScoreDetails {
 };
 
 //! Score for vitals.
-struct VitalScoreDetails {
+struct VitalScoreDetails
+{
     float life;
     float shields;
     float energy;
 
     VitalScoreDetails();
 
-    static void AddEntries(ScoreEntry base, std::vector<ScoreEntry>& entries) {
+    static void AddEntries(ScoreEntry base, std::vector<ScoreEntry> &entries)
+    {
         SET_ENTRY(VitalScoreDetails, life)
         SET_ENTRY(VitalScoreDetails, shields)
         SET_ENTRY(VitalScoreDetails, energy)
@@ -99,15 +100,17 @@ struct VitalScoreDetails {
 };
 
 //! Detailed scores.
-struct ScoreDetails {
+struct ScoreDetails
+{
     float idle_production_time;
     float idle_worker_time;
 
     float total_value_units;
     float total_value_structures;
 
-    // Note the "killed_value" fields are a combination of minerals, vespene and a human designer guess. Maybe useful as a delta.
-    // The weighting of the combination and the human designer guess is different (not symmetric) with the "total_value" fields!
+    // Note the "killed_value" fields are a combination of minerals, vespene and a human designer guess. Maybe useful as
+    // a delta. The weighting of the combination and the human designer guess is different (not symmetric) with the
+    // "total_value" fields!
     float killed_value_units;
     float killed_value_structures;
 
@@ -143,7 +146,8 @@ struct ScoreDetails {
 
     ScoreDetails();
 
-    static void AddEntries(ScoreEntry base, std::vector<ScoreEntry>& entries) {
+    static void AddEntries(ScoreEntry base, std::vector<ScoreEntry> &entries)
+    {
         SET_ENTRY(ScoreDetails, idle_production_time)
         SET_ENTRY(ScoreDetails, idle_worker_time)
         SET_ENTRY(ScoreDetails, total_value_units)
@@ -176,23 +180,25 @@ struct ScoreDetails {
 };
 
 //! Scores.
-struct Score {
+struct Score
+{
     ScoreType score_type;
-    float score;                     // Note: check score_type to know whether this is a melee score or curriculum score
+    float score;// Note: check score_type to know whether this is a melee score or curriculum score
     ScoreDetails score_details;
 
     // Access as a flat list of floats.
     static const int float_count_ = sizeof(ScoreDetails) / sizeof(float) + 1;
-    const float* RawFloats() const { return &score; }
+    const float *RawFloats() const { return &score; }
 
     Score();
 
-    static void AddEntries(std::vector<ScoreEntry>& entries) {
+    static void AddEntries(std::vector<ScoreEntry> &entries)
+    {
         SET_ENTRY_BASE(Score, score)
         SET_ENTRY_BASE_STRUCT(Score, score_details)
     }
 
-    bool IsEqual(const Score& other_score) const;
+    bool IsEqual(const Score &other_score) const;
 };
 
-}
+}// namespace sc2

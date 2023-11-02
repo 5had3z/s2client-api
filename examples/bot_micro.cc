@@ -6,19 +6,18 @@
 #include "bot_examples.h"
 
 //*************************************************************************************************
-int main(int argc, char* argv[]) {
+int main(int argc, char *argv[])
+{
     sc2::Coordinator coordinator;
-    if (!coordinator.LoadSettings(argc, argv)) {
-        return 1;
-    }
+    if (!coordinator.LoadSettings(argc, argv)) { return 1; }
 
     coordinator.SetRealtime(true);
 
     // Add the custom bot, it will control the player.
     sc2::MarineMicroBot bot;
     coordinator.SetParticipants({
-        CreateParticipant(sc2::Race::Terran, &bot),
-        CreateComputer(sc2::Race::Zerg),
+      CreateParticipant(sc2::Race::Terran, &bot),
+      CreateComputer(sc2::Race::Zerg),
     });
 
     // Start the game.
@@ -26,9 +25,7 @@ int main(int argc, char* argv[]) {
     coordinator.StartGame(sc2::kMapMarineMicro);
 
     while (coordinator.Update()) {
-        if (sc2::PollKeyPress()) {
-            break;
-        }
+        if (sc2::PollKeyPress()) { break; }
     }
 
     return 0;

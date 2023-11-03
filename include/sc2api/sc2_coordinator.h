@@ -94,7 +94,10 @@ class Coordinator
     void SetUseGeneralizedAbilityId(bool value);
 
     //! Sets the replay perspective. 0 to observe "Everyone"
-    void SetReplayPerspective(int perspective = 1);
+    void SetReplayPerspective(uint32_t perspective = 1);
+
+    //! Get the current replay perspective.
+    uint32_t GetReplayPerspective() const;
 
     //! Appends a command line argument to be fed to StarCraft II when starting.
     // \param option The string to be appended to the executable invoke.

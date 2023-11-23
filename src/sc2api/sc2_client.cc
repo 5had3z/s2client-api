@@ -1783,28 +1783,32 @@ bool ControlImp::HasResponsePending() const { return proto_.HasResponsePending()
 
 bool ControlImp::GetObservation()
 {
-    if (app_state_ != AppState::normal) return false;
+    if (app_state_ != AppState::normal) { return false; }
 
     GameRequestPtr request = proto_.MakeRequest();
     request->mutable_observation();
     if (!proto_.SendRequest(request)) { return false; }
 
     GameResponsePtr response = WaitForResponse();
+    if (response.get() == nullptr) {
+        std::cerr << "Got no response from the game, probably crashed\n";
+        return false;
+    }
+
     ResponseObservationPtr response_observation;
     SET_MESSAGE_RESPONSE(response_observation, response, observation);
     if (response_observation.HasErrors()) {
-        std::cerr << std::endl << "Error in returning observation:" << std::endl;
-        std::cerr << "The main response is of type: " << std::to_string(response->response_case()) << std::endl;
-        if (response_observation.HasResponse()) {
-            std::cerr << "There is no ResponseObservation/message!" << std::endl;
-        }
+        std::cerr << "\nError in returning observation:\n";
+        std::cerr << "The main response is of type: " << std::to_string(response->response_case()) << "\n";
+        if (response_observation.HasResponse()) { std::cerr << "There is no ResponseObservation/message!\n"; }
         if (response->error_size() > 0) {
-            for (int i = 0; i < response->error_size(); ++i)
-                std::cerr << "Error string: " << response->error(i) << std::endl;
+            for (int i = 0; i < response->error_size(); ++i) {
+                std::cerr << "Error string: " << response->error(i) << "\n";
+            }
         } else {
-            std::cerr << "No error strings in result." << std::endl;
+            std::cerr << "No error strings in result.\n";
         }
-        std::cerr << std::endl;
+        std::cerr << "\n";
         return false;
     }
 

@@ -18,7 +18,7 @@ void StartCivetweb()
 {
     static bool is_initialized = false;
     static const char *REQUEST_TIMEOUT_MS = "5000";
-    static const char *WEBSOCKET_TIMEOUT_MS = "1200000";
+    static const char *WEBSOCKET_TIMEOUT_MS = "120000";
     static const char *NUM_THREADS = "4";
     static const char *NO_DELAY = "1";
 

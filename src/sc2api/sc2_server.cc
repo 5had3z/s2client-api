@@ -73,7 +73,7 @@ template<class T> static void SendMessage(mg_connection *conn, std::queue<T> &me
     if (VERBOSE) std::cout << "SendMessage (" << conn << ")" << std::endl;
 
     google::protobuf::Message *message = message_queue.front().second;
-    size_t size = message->ByteSize();
+    size_t size = message->ByteSizeLong();
     char *bytes = new char[size];
     message->SerializeToArray(bytes, (int)size);
     mg_websocket_write(conn, MG_WEBSOCKET_OPCODE_BINARY, (const char *)bytes, size);

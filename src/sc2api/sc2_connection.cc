@@ -103,7 +103,7 @@ void Connection::Send(const SC2APIProtocol::Request *request)
     // Connection must be established before sending.
     assert(connection_);
     if (!connection_) { return; }
-    size_t size = request->ByteSize();
+    size_t size = request->ByteSizeLong();
     void *buffer = malloc(size);
     request->SerializeToArray(buffer, (int)size);
     mg_websocket_write(connection_, MG_WEBSOCKET_OPCODE_BINARY, (const char *)buffer, size);

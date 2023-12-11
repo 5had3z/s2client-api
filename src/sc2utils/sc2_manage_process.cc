@@ -52,6 +52,7 @@
 #include <sys/select.h>
 #include <sys/stat.h>
 #include <sys/types.h>
+#include <sys/wait.h>
 #include <termios.h>
 #include <unistd.h>
 
@@ -437,6 +438,9 @@ bool IsProcessRunning(uint64_t process_id)
 bool TerminateProcess(uint64_t process_id)
 {
     if (kill(process_id, SIGKILL) == -1) { return false; }
+    int status = 0;
+    waitpid(process_id, &status, 0);
+    if (!WIFEXITED(status)) { std::cerr << "Process terminated with error: " << status; }
     RemovePid(process_id);
     return true;
 }

@@ -202,6 +202,8 @@ class Coordinator
     //! Gets the game executable path.
     //!< \return The game executable path.
     std::string GetExePath() const;
+    //! Manually call relaunch on replay observers
+    void Relaunch();
 
   private:
     CoordinatorImp *imp_;

@@ -940,4 +940,10 @@ void Coordinator::SetupPorts(size_t num_agents, int port_start, bool check_singl
         }
     }
 }
+
+void Coordinator::Relaunch()
+{
+    for (auto replay_observer : imp_->replay_observers_) { imp_->Relaunch(replay_observer); }
+}
+
 }// namespace sc2

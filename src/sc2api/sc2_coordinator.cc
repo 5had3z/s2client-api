@@ -801,15 +801,15 @@ void Coordinator::SetStepSize(int step_size)
     imp_->process_settings_.step_size = step_size;
 }
 
-void Coordinator::SetProcessPath(const std::string &path)
+void Coordinator::SetProcessPath(const std::string &path, bool force)
 {
-    assert(!imp_->starcraft_started_);
+    assert(!imp_->starcraft_started_ || force);
     imp_->process_settings_.process_path = path;
 }
 
-void Coordinator::SetDataVersion(const std::string &version)
+void Coordinator::SetDataVersion(const std::string &version, bool force)
 {
-    assert(!imp_->starcraft_started_);
+    assert(!imp_->starcraft_started_ || force);
     imp_->process_settings_.data_version = version;
 }
 

@@ -53,14 +53,14 @@ class Coordinator
 
     //! Sets the path to the StarCraft II binary.
     //! \param path Absolute file path.
-    void SetProcessPath(const std::string &path);
+    void SetProcessPath(const std::string &path, bool force = false);
 
     //! Set the correct data version of a replay to allow faster replay loading. Saves a few seconds if replay is not up
     //! to date.
     //!  Works only in combination with correct process path set by "SetProcessPath".
     //! \param version Look in "protocol/buildinfo/versions.json" for the property "data-hash". Or read it from
     //! "ReplayInfo.data_version".
-    void SetDataVersion(const std::string &version);
+    void SetDataVersion(const std::string &version, bool force = false);
 
     //! Sets the timeout for network operations.
     //! \param value timeout_ms in milliseconds.

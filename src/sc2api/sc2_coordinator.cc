@@ -77,6 +77,9 @@ int LaunchProcess(ProcessSettings &process_settings,
         cl.push_back(std::to_string(window_start_y + window_height));
     }
 
+    for (auto c : cl) { std::cout << c << ","; }
+    std::cout << std::endl;
+
     pi.process_path = process_settings.process_path;
     pi.process_id = StartProcess(process_settings.process_path, cl);
     if (!pi.process_id) {
@@ -184,7 +187,7 @@ class CoordinatorImp
     bool WaitForAllResponses();
     void AddAgent(Agent *agent);
 
-    bool Relaunch(ReplayObserver *replay_observer);
+    bool Relaunch(ReplayObserver *replay_observer, const std::string &version = "");
 
     int window_width_ = 1024;
     int window_height_ = 768;
@@ -561,7 +564,7 @@ bool CoordinatorImp::StartGame()
     return JoinGame();
 }
 
-bool CoordinatorImp::Relaunch(ReplayObserver *replay_observer)
+bool CoordinatorImp::Relaunch(ReplayObserver *replay_observer, const std::string &version)
 {
     ControlInterface *control = replay_observer->Control();
     const ProcessInfo &pi = control->GetProcessInfo();
@@ -571,6 +574,9 @@ bool CoordinatorImp::Relaunch(ReplayObserver *replay_observer)
 
     // Reset the control interface so internal state gets reset.
     replay_observer->Reset();
+
+    // Update version for next time
+    if (!version.empty()) { this->process_settings_.data_version = version; }
 
     // ReplayObserver needs the control interface from Client.
     replay_observer->SetControl(replay_observer->Control());
@@ -739,7 +745,8 @@ bool Coordinator::Update()
             replay_observer->OnError(client_errors, control->GetProtocolErrors());
             error_occurred = true;
             if (imp_->replay_recovery_) {
-                // An error did occur but if we succesfully recovered ignore it. The client will still gets its event
+                // An error did occur but if we succesfully recovered ignore it. The client will still gets its
+                // event
                 bool connected = imp_->Relaunch(replay_observer);
                 if (connected) {
                     error_occurred = false;
@@ -941,9 +948,9 @@ void Coordinator::SetupPorts(size_t num_agents, int port_start, bool check_singl
     }
 }
 
-void Coordinator::Relaunch()
+void Coordinator::Relaunch(const std::string &dataVersion)
 {
-    for (auto replay_observer : imp_->replay_observers_) { imp_->Relaunch(replay_observer); }
+    for (auto replay_observer : imp_->replay_observers_) { imp_->Relaunch(replay_observer, dataVersion); }
 }
 
 }// namespace sc2

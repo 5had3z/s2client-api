@@ -184,7 +184,7 @@ class CoordinatorImp
     bool WaitForAllResponses();
     void AddAgent(Agent *agent);
 
-    bool Relaunch(ReplayObserver *replay_observer, const std::string &version = "");
+    bool Relaunch(ReplayObserver *replay_observer);
 
     int window_width_ = 1024;
     int window_height_ = 768;
@@ -561,7 +561,7 @@ bool CoordinatorImp::StartGame()
     return JoinGame();
 }
 
-bool CoordinatorImp::Relaunch(ReplayObserver *replay_observer, const std::string &version)
+bool CoordinatorImp::Relaunch(ReplayObserver *replay_observer)
 {
     ControlInterface *control = replay_observer->Control();
     const ProcessInfo &pi = control->GetProcessInfo();
@@ -571,9 +571,6 @@ bool CoordinatorImp::Relaunch(ReplayObserver *replay_observer, const std::string
 
     // Reset the control interface so internal state gets reset.
     replay_observer->Reset();
-
-    // Update version for next time
-    if (!version.empty()) { this->process_settings_.data_version = version; }
 
     // ReplayObserver needs the control interface from Client.
     replay_observer->SetControl(replay_observer->Control());
@@ -804,15 +801,15 @@ void Coordinator::SetStepSize(int step_size)
     imp_->process_settings_.step_size = step_size;
 }
 
-void Coordinator::SetProcessPath(const std::string &path)
+void Coordinator::SetProcessPath(const std::string &path, bool force)
 {
-    assert(!imp_->starcraft_started_);
+    assert(!imp_->starcraft_started_ || force);
     imp_->process_settings_.process_path = path;
 }
 
-void Coordinator::SetDataVersion(const std::string &version)
+void Coordinator::SetDataVersion(const std::string &version, bool force)
 {
-    assert(!imp_->starcraft_started_);
+    assert(!imp_->starcraft_started_ || force);
     imp_->process_settings_.data_version = version;
 }
 
@@ -944,9 +941,9 @@ void Coordinator::SetupPorts(size_t num_agents, int port_start, bool check_singl
     }
 }
 
-void Coordinator::Relaunch(const std::string &version)
+void Coordinator::Relaunch()
 {
-    for (auto replay_observer : imp_->replay_observers_) { imp_->Relaunch(replay_observer, version); }
+    for (auto replay_observer : imp_->replay_observers_) { imp_->Relaunch(replay_observer); }
 }
 
 }// namespace sc2

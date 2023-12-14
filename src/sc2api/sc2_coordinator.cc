@@ -77,9 +77,6 @@ int LaunchProcess(ProcessSettings &process_settings,
         cl.push_back(std::to_string(window_start_y + window_height));
     }
 
-    for (auto c : cl) { std::cout << c << ","; }
-    std::cout << std::endl;
-
     pi.process_path = process_settings.process_path;
     pi.process_id = StartProcess(process_settings.process_path, cl);
     if (!pi.process_id) {
@@ -745,8 +742,7 @@ bool Coordinator::Update()
             replay_observer->OnError(client_errors, control->GetProtocolErrors());
             error_occurred = true;
             if (imp_->replay_recovery_) {
-                // An error did occur but if we succesfully recovered ignore it. The client will still gets its
-                // event
+                // An error did occur but if we succesfully recovered ignore it. The client will still gets its event
                 bool connected = imp_->Relaunch(replay_observer);
                 if (connected) {
                     error_occurred = false;
@@ -948,9 +944,9 @@ void Coordinator::SetupPorts(size_t num_agents, int port_start, bool check_singl
     }
 }
 
-void Coordinator::Relaunch(const std::string &dataVersion)
+void Coordinator::Relaunch(const std::string &version)
 {
-    for (auto replay_observer : imp_->replay_observers_) { imp_->Relaunch(replay_observer, dataVersion); }
+    for (auto replay_observer : imp_->replay_observers_) { imp_->Relaunch(replay_observer, version); }
 }
 
 }// namespace sc2

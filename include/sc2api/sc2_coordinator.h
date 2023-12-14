@@ -203,7 +203,7 @@ class Coordinator
     //!< \return The game executable path.
     std::string GetExePath() const;
     //! Manually call relaunch on replay observers
-    void Relaunch(const std::string &dataVersion = "");
+    void Relaunch(const std::string &version = "");
 
   private:
     CoordinatorImp *imp_;
